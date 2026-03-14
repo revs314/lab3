@@ -86,14 +86,81 @@ end top_basys3;
 architecture top_basys3_arch of top_basys3 is 
   
 	-- declare components
-
-  
-begin
-	-- PORT MAPS ----------------------------------------
-
+component thunderbird_fsm is
+	generic ( constant k_DIV : natural := 2	); 
+	port (
+	     i_reset     : in  std_logic;
+         i_clk 	     : in  std_logic;
+         i_left      : in  std_logic;
+         i_right     : in  std_logic;
+         o_lights_L  : out  std_logic_vector(2 downto 0);
+         o_lights_R  : out  std_logic_vector(2 downto 0)
+	);
+end component thunderbird_fsm;
 	
+--slows down the clock to a speed that we can observe
+--k_DIV lets you choose what speed you want clock at
+--i_reset pauses clock when high
+component clock_divider is
+	generic ( constant k_DIV : natural := 2	); 
+	port (
+	        i_clk    : in std_logic;		   -- basys3 clk
+			i_reset  : in std_logic;		   -- asynchronous
+			o_clk    : out std_logic		   -- divided (slow) clock
+	);
+end component clock_divider;
+
+
+    signal w_slow_clk : std_logic;		--clock that goes at observable speed
+    
+    signal w_fsm_reset : std_logic;
+    signal w_left : std_logic;
+    signal w_right : std_logic;
+    
+    signal w_lights_L : std_logic_vector(2 downto 0);
+    signal w_lights_R : std_logic_vector(2 downto 0);
+
+    
+
+begin
+
+    w_left <= sw(15); -- connects the switch to a wire
+    w_right <= sw(0);
+    w_fsm_reset <= btnR;
+
+	-- PORT MAPS ----------------------------------------
+    thunderbird_inst : thunderbird_fsm 		--instantiation of clock_divider to take 
+        port map (						  
+            i_clk   => w_slow_clk,
+			i_reset => w_fsm_reset,
+			i_left => w_left,
+			i_right => w_right,
+			o_lights_L => w_lights_L,
+			o_lights_R => w_lights_R
+	    );
+
+    clkdiv_inst : clock_divider 		--instantiation of clock_divider to take 
+        generic map ( k_DIV => 25000000 ) -- make it even slower?
+        port map (						  
+            i_clk   => clk,
+            i_reset => btnL, -- pressing L restarts the slow clock
+            o_clk   => w_slow_clk
+            
+        );  
 	
 	-- CONCURRENT STATEMENTS ----------------------------
+	
+	-- LEFT LIGHTS ----------------------
+	
+	led(15) <= w_lights_L(2); --MSB or LC
+	led(14) <= w_lights_L(1); -- LB
+	led(13) <= w_lights_L(0); -- LA
+	
+	-- RIGHT LIGHTS ---------------------
+	
+	led(0) <= w_lights_R(0); -- RA
+	led(1) <= w_lights_R(1); -- RB
+	led(2) <= w_lights_R(2); -- RC
 	
 	-- ground unused LEDs
 	-- leave unused switches UNCONNECTED
