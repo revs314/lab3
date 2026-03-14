@@ -180,7 +180,7 @@ sim_proc: process
 	   assert o_lights_R = "111" AND o_lights_L = "111" report "left and right sides should be ON" severity failure;
 
 	   wait for k_clk_period;
-	   assert o_lights_R = "000" AND o_lights_R = "000" report "left and right sides should be OFF" severity failure;
+	   assert o_lights_R = "000" AND o_lights_L = "000" report "left and right sides should be OFF" severity failure;
 
        i_right <= '0';
        

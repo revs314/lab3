@@ -4173,3 +4173,4 @@ selectCodeEditor("thunderbird_fsm_tb.vhd", 253, 355); // ae (thunderbird_fsm_tb.
 // TclEventType: RUN_STEP_COMPLETED
 // TclEventType: RUN_STATUS_CHANGE
 // HMemoryUtils.trashcanNow. Engine heap size: 1,206 MB. GUI used memory: 93 MB. Current time: 3/13/26, 6:48:14 PM MDT
+// TclEventType: RUN_STEP_COMPLETED

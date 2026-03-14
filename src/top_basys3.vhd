@@ -71,8 +71,10 @@ entity top_basys3 is
 
 		-- LEDs (16 total)
 		-- taillights (LC, LB, LA, RA, RB, RC)
-		led 	:   out std_logic_vector(15 downto 0);  -- led(15:13) --> L
-                                                        -- led(2:0)   --> R
+		led 	:   out std_logic_vector(15 downto 0);
+		-- led(15:13) --> LC, LB, LA
+        -- led(2:0)   --> RC, RB, RA
+        -- led(12:3) --> unused
 		
 		-- Buttons (5 total)
 		--btnC	:	in	std_logic
@@ -158,9 +160,9 @@ begin
 	
 	-- RIGHT LIGHTS ---------------------
 	
-	led(0) <= w_lights_R(0); -- RA
+	led(0) <= w_lights_R(2); -- RC
 	led(1) <= w_lights_R(1); -- RB
-	led(2) <= w_lights_R(2); -- RC
+	led(2) <= w_lights_R(0); -- RA
 	
 	-- ground unused LEDs
 	-- leave unused switches UNCONNECTED
